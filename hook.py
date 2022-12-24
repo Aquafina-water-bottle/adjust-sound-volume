@@ -27,7 +27,7 @@ from anki.sound import AVTag
 from . import config
 
 
-def did_begin_playing(player: Any, _: AVTag) -> None:
+def did_begin_playing(player: Any, av_tag: AVTag) -> None:
     """Set the sound volume."""
     volume_config = config.load_config()
     if isinstance(player, SimpleMplayerSlaveModePlayer):
@@ -37,7 +37,9 @@ def did_begin_playing(player: Any, _: AVTag) -> None:
 
         # How can we retrieve the current value of the af property?
         # "player.get_property('af')" always returns "[]"
-        if volume_config.loudnorm.enabled:
+        if volume_config.loudnorm.enabled and (
+            getattr(av_tag, "filename", None) not in volume_config.loudnorm.ignored_files
+        ):
             i = volume_config.loudnorm.i
             # True => true, False => false
             dual_mono = str(volume_config.loudnorm.dual_mono).lower()

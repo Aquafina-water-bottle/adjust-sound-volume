@@ -156,11 +156,14 @@ class VolumeDialog(QDialog):
 
     def accept(self) -> None:
         """Save the sound volume and hide the dialog window."""
+        original_volume_config = config.load_config()
+
         volume_config = config.VolumeConfig()
         volume_config.volume = self.volume_slider.value()
         volume_config.loudnorm.enabled = self.loudnorm_group_box.isChecked()
         volume_config.loudnorm.i = self.i_slider.value()
         volume_config.loudnorm.dual_mono = self.dual_mono_check_box.isChecked()
+        volume_config.loudnorm.ignored_files = original_volume_config.loudnorm.ignored_files
 
         save_config(volume_config)
         super().accept()

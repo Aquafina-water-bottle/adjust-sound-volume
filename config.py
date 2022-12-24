@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from typing import Any
 from typing import Dict
+from typing import List
 from typing import Type
 
 from aqt import mw
@@ -31,6 +32,7 @@ class LoudnormConfig:
     enabled: bool = False
     i: int = -24
     dual_mono: bool = False
+    ignored_files: List[str] = field(default_factory=list)
 
 
 @dataclass
@@ -40,7 +42,7 @@ class VolumeConfig:
     loudnorm: LoudnormConfig = field(default_factory=LoudnormConfig)
 
 
-def _load_value(config: Dict[str, Any], key: str, type_: Type) -> Any:
+def load_value(config: Dict[str, Any], key: str, type_: Type) -> Any:
     if key in config and isinstance(config[key], type_):
         return config[key]
 
@@ -58,7 +60,7 @@ def load_config() -> VolumeConfig:
     if config is None:
         return volume_config
 
-    value = _load_value(config, 'volume', int)
+    value = load_value(config, 'volume', int)
     if value is not None:
         volume_config.volume = value
 
@@ -67,16 +69,20 @@ def load_config() -> VolumeConfig:
 
     loudnorm_config = config['loudnorm']
 
-    value = _load_value(loudnorm_config, 'enabled', bool)
+    value = load_value(loudnorm_config, 'enabled', bool)
     if value is not None:
         volume_config.loudnorm.enabled = value
 
-    value = _load_value(loudnorm_config, 'i', int)
+    value = load_value(loudnorm_config, 'i', int)
     if value is not None:
         volume_config.loudnorm.i = value
 
-    value = _load_value(loudnorm_config, 'dual_mono', bool)
+    value = load_value(loudnorm_config, 'dual_mono', bool)
     if value is not None:
         volume_config.loudnorm.dual_mono = value
+
+    value = load_value(loudnorm_config, 'ignored_files', list)
+    if value is not None:
+        volume_config.loudnorm.ignored_files = value
 
     return volume_config
