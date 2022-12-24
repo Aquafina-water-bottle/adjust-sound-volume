@@ -42,7 +42,7 @@ class VolumeConfig:
     loudnorm: LoudnormConfig = field(default_factory=LoudnormConfig)
 
 
-def load_value(config: Dict[str, Any], key: str, type_: Type) -> Any:
+def _load_value(config: Dict[str, Any], key: str, type_: Type) -> Any:
     if key in config and isinstance(config[key], type_):
         return config[key]
 
@@ -60,7 +60,7 @@ def load_config() -> VolumeConfig:
     if config is None:
         return volume_config
 
-    value = load_value(config, 'volume', int)
+    value = _load_value(config, 'volume', int)
     if value is not None:
         volume_config.volume = value
 
@@ -69,19 +69,19 @@ def load_config() -> VolumeConfig:
 
     loudnorm_config = config['loudnorm']
 
-    value = load_value(loudnorm_config, 'enabled', bool)
+    value = _load_value(loudnorm_config, 'enabled', bool)
     if value is not None:
         volume_config.loudnorm.enabled = value
 
-    value = load_value(loudnorm_config, 'i', int)
+    value = _load_value(loudnorm_config, 'i', int)
     if value is not None:
         volume_config.loudnorm.i = value
 
-    value = load_value(loudnorm_config, 'dual_mono', bool)
+    value = _load_value(loudnorm_config, 'dual_mono', bool)
     if value is not None:
         volume_config.loudnorm.dual_mono = value
 
-    value = load_value(loudnorm_config, 'ignored_files', list)
+    value = _load_value(loudnorm_config, 'ignored_files', list)
     if value is not None:
         volume_config.loudnorm.ignored_files = value
 
